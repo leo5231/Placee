@@ -26,6 +26,31 @@ export default function Registro ({navigation}){
         return null;
       }
     
+
+    const handleRegister = async () => {
+      if (form.senha !== form.confirmeSuaSenha) {
+        alert('As senhas não coincidem!');
+        return;
+      }
+      try {
+        const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBXcCREc3Msj3HyHeFK0YLJBt0y1y80xdc', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: form.email,
+            password: form.senha,
+            returnSecureToken: true
+          })
+        });
+        const data = await response.json();
+        if (data.error) throw new Error(data.error.message);
+        alert('Conta criada com sucesso!');
+        navigation.replace('Tabs');
+      } catch (error) {
+        alert('Erro ao criar conta: ' + error.message);
+      }
+    };
+
     return (       
         
         <View style={{flex:1, backgroundColor: 'white'}}>
@@ -120,7 +145,7 @@ export default function Registro ({navigation}){
                         </View>  
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => { }}>
+                    <TouchableOpacity onPress={handleRegister}>
                         <View style={styles.btnLogin}>
                             <Text style={styles.btnLoginText}>Criar Minha Conta</Text>
                         </View>

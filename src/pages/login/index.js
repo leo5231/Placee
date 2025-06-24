@@ -21,7 +21,26 @@ export default function Login ({navigation}) {
       if (!fontLoaded) {
         return null;
       }
-    
+
+    const handleLogin = async () => {
+      try {
+        const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBXcCREc3Msj3HyHeFK0YLJBt0y1y80xdc', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: form.email,
+            password: form.senha,
+            returnSecureToken: true
+          })
+        });
+        const data = await response.json();
+        if (data.error) throw new Error(data.error.message);
+        navigation.replace('Tabs');
+      } catch (error) {
+        alert('Erro ao fazer login: ' + error.message);
+      }
+    };
+
     return (
        
            <View style={styles.container}>
@@ -79,7 +98,7 @@ export default function Login ({navigation}) {
                         </View>  
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => navigation.navigate('Tabs')}>
+                    <TouchableOpacity onPress={handleLogin}>
                         <View style={styles.btnLogin}>
                             <Text style={styles.btnLoginText}>AVANÇAR</Text>
                         </View>
